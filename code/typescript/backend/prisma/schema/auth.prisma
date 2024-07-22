@@ -1,0 +1,11 @@
+model UserSession {
+  id         Int       @id @default(autoincrement())
+  token      String    @unique @db.VarChar(600)
+  user_id    Int
+  created_at DateTime  @default(now())
+  updated_at DateTime? @updatedAt
+  User       User      @relation(fields: [user_id], references: [id])
+
+  @@index([token])
+  @@map("user_sessions")
+}

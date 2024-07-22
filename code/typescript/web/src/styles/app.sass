@@ -1,0 +1,89 @@
+@import "./border"
+.body
+  height: 100%
+
+.web
+  width: 1200px
+  margin: auto
+
+.mobile
+  width: 100%
+  padding: 0 3vw
+
+.relative-position
+  position: relative
+
+.full-width
+  width: 100% !important
+
+.fit
+  width: 100% !important
+
+.nowrap
+  white-space: nowrap
+
+.absolute-full
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+
+.fixed-full
+  position: fixed
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+
+.absolute-center
+  position: absolute
+  left: 50%
+  top: 50%
+  transform: translate(-50%,-50%)
+
+.text-center
+  text-align: center
+
+.z-top
+  z-index: 3000
+
+.z-max
+  z-index: 9999
+
+.clickable
+  cursor: pointer
+
+.no-pointer-events
+  pointer-events: none
+
+.invisible
+  visibility: hidden
+
+.copy-input
+  padding: 4px 11px
+  display: flex
+  justify-content: space-between
+  @extend .br-sm
+
+// ant layout
+
+.ant-layout-header
+  padding-inline: 0px !important
+
+// ant form item
+.ant-form-item
+  margin-bottom: 10px
+
+.ant-form-item-label
+  font-weight: bold
+  padding: 0 0 4px !important
+
+.ant-input-number
+  width: 100%
+
+// glass effect #can add your own background-color
+.glass-effect
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1)
+  backdrop-filter: blur(3px)
+  -webkit-backdrop-filter: blur(5px)

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "~libs/*": [
+                "backend/libs/*"
+            ],
+            "~backend/*": [
+                "backend/apps/api/src/*"
+            ],
+        },
+        "resolveJsonModule": true
+    },
+}
