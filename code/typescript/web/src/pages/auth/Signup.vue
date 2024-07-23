@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import {
   Carousel,
-  Checkbox,
   Divider,
   Flex,
   Form,
@@ -13,7 +12,6 @@ import { PasswordInput, PrimaryButton, TextInput } from 'src/components';
 import Card from 'src/components/Card.vue';
 import { useLoading } from 'src/composable';
 import { computed, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 
 interface Announcement {
   id: number;
@@ -22,18 +20,21 @@ interface Announcement {
   imageUrl: string | null;
 }
 
-const router = useRouter();
-const route = useRoute();
 const { loading, toast } = useLoading();
-const state = reactive<{ email: string; password: string }>({
+const state = reactive<{
+  email: string;
+  password: string;
+  confirmPassword: string;
+}>({
   email: '',
   password: '',
+  confirmPassword: '',
 });
 const announcements = ref<Announcement[]>([]);
 const carouselContent = computed<Announcement[]>(() => buildCarouselContent());
-console.log(carouselContent);
 const currentSlide = ref(carouselContent.value[0].id);
 const checked = ref(false);
+
 function buildCarouselContent(): Announcement[] {
   if (announcements.value.length > 0) {
     currentSlide.value = announcements.value[0].id;
@@ -56,10 +57,16 @@ function buildCarouselContent(): Announcement[] {
   }
 }
 
+function passwordValidator(_rule, value: string) {
+  if (value !== '' && value === state.password) {
+    return Promise.resolve();
+  }
+  return Promise.reject('Passwords are not the same');
+}
 function handleSubmit() {
   toast(
     async () => {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
     },
     {
       isLoading: loading,
@@ -77,18 +84,16 @@ function handleSubmit() {
       }"
     >
       <Flex justify="space-between">
-        <Card
-          class="inner-card"
-          :body-style="{
-            height: '100vh',
-          }"
-        >
+        <Card class="inner-card">
           <Typography>
-            <TypographyTitle :level="3"> Welcome to SG Group </TypographyTitle>
-            <TypographyParagraph> Login to your account </TypographyParagraph>
+            <TypographyTitle :level="3"> Welcome to Sg Group </TypographyTitle>
+            <TypographyParagraph>
+              Sign up to begin your journey
+            </TypographyParagraph>
             <img scr="" width="100%" height="100px" />
           </Typography>
           <Divider />
+
           <Form :model="state" @finish="handleSubmit">
             <TextInput
               v-model="state.email"
@@ -101,15 +106,26 @@ function handleSubmit() {
               v-model="state.password"
               label="Password"
               name="password"
+              placeholder=" "
               required
             />
-            <Flex align="center" justify="space-between">
-              <Checkbox v-model:checked="checked"> Remember me</Checkbox>
-              <PrimaryButton label="Forget Password" style-type="link" />
-            </Flex>
+            <PasswordInput
+              v-model="state.confirmPassword"
+              placeholder=" "
+              label="Confirm Password"
+              name="confirmPassword"
+              :rules="[
+                {
+                  validator: passwordValidator,
+                  trigger: 'change',
+                },
+              ]"
+              required
+            />
+
             <div style="text-align: center">
               <PrimaryButton
-                label="Login"
+                label="Sign Up"
                 type="submit"
                 fit-width
                 :loading="loading"
@@ -120,10 +136,9 @@ function handleSubmit() {
                 }"
               />
             </div>
-
             <Flex align="center" justify="center">
-              Don't Have An Account?
-              <PrimaryButton label="Sign Up" style-type="link" />
+              Already has an account?
+              <PrimaryButton label="Login" style-type="link" />
             </Flex>
           </Form>
         </Card>

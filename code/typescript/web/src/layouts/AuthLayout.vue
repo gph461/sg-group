@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import {
-  Flex,
-  Layout,
-  LayoutContent,
-  LayoutFooter,
-  LayoutHeader,
-} from 'ant-design-vue';
+// import {
+//   Flex,
+//   Layout,
+//   LayoutContent,
+//   LayoutFooter,
+//   LayoutHeader,
+// } from 'ant-design-vue';
 import { useResponsive } from 'src/composable';
 
 const { isMobile } = useResponsive();
 </script>
 
 <template>
-  <Layout :style="{ height: '100vh', minWidth: isMobile ? 'auto' : '1200px' }">
+  <!-- <Layout :style="{ height: '100vh', minWidth: isMobile ? 'auto' : '1200px' }">
     <LayoutHeader style="background-color: #fff">
       <Flex
         justify="space-between"
@@ -22,7 +22,7 @@ const { isMobile } = useResponsive();
           web: !isMobile,
         }"
       >
-        <!-- <img src="/images/logo.png" /> -->
+        <img src="/images/logo.png" />
         Logo
       </Flex>
     </LayoutHeader>
@@ -46,7 +46,8 @@ const { isMobile } = useResponsive();
         }}
       </div>
     </LayoutFooter>
-  </Layout>
+  </Layout> -->
+  <router-view />
 </template>
 <style scoped lang="sass">
 .abc

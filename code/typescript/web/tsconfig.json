@@ -40,6 +40,12 @@
       "~backend/*": [
         "../backend/apps/api/src/*"
       ],
+      "public": [
+        "public"
+      ],
+      "public/*": [
+        "public/*"
+      ],
     },
   },
   "include": [

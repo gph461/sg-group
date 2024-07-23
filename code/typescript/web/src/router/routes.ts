@@ -12,9 +12,7 @@ export enum AppRoute {
   Dashboard = 'Dashboard',
   Developer = 'Developer',
   Project = 'Project',
-  Test = 'Test',
-  Test2 = 'Test2',
-  TableDemo = 'TableDemo',
+  Signup = 'Signup',
 }
 
 function authGuard(): true | string {
@@ -44,6 +42,11 @@ const routes: RouteRecordRaw[] = [
         path: 'login',
         name: AppRoute.Login,
         component: () => import('src/pages/auth/Login.vue'),
+      },
+      {
+        path: 'signup',
+        name: AppRoute.Signup,
+        component: () => import('src/pages/auth/Signup.vue'),
       },
     ],
   },
