@@ -44,7 +44,7 @@ defineProps({
           invisible: loadingHideComponent && loading,
           'no-pointer-events': loading,
         }"
-        class="fit"
+        class="full-width"
       >
         <slot />
       </div>

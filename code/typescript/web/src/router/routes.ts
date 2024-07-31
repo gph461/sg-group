@@ -1,9 +1,14 @@
+import { useUserStore } from 'src/stores/user';
 import { RouteRecordRaw } from 'vue-router';
-
 declare module 'vue-router' {
   interface RouteMeta {
-    guards?: ((to: RouteLocationNormalized) => true | string)[];
+    guards?: ((to: RouteLocationNormalized) => RouteGuardRes)[];
   }
+}
+
+export interface RouteGuardRes {
+  route: true | string;
+  redirect?: string;
 }
 
 export enum AppRoute {
@@ -15,44 +20,60 @@ export enum AppRoute {
   Signup = 'Signup',
 }
 
-function authGuard(): true | string {
-  // if not loged in, return AppRoute.Login
-  return true;
+function authGuard(): RouteGuardRes {
+  //if not loged in, return AppRoute.Login
+  const user = useUserStore();
+  console.log(user);
+  if (!user.isLoggedIn) {
+    return { route: AppRoute.Login, redirect: AppRoute.Index };
+  }
+
+  return { route: true };
 }
 
-function loginGuard(): true | string {
-  return true;
+function authorizedGuard(): RouteGuardRes {
+  const user = useUserStore();
+
+  if (user.isLoggedIn) return { route: AppRoute.Index };
+  return { route: true };
+}
+
+function loginGuard(): RouteGuardRes {
+  return { route: true };
 }
 
 const routes: RouteRecordRaw[] = [
   {
-    path: '',
-    redirect: {
-      name: AppRoute.Index,
-    },
-  },
-  {
     path: '/auth',
     component: () => import('src/layouts/AuthLayout.vue'),
-    meta: {
-      guards: [loginGuard],
-    },
     children: [
       {
-        path: 'login',
+        path: '/login',
         name: AppRoute.Login,
+        meta: {
+          guards: [authorizedGuard],
+        },
         component: () => import('src/pages/auth/Login.vue'),
       },
       {
-        path: 'signup',
+        path: '/signup',
         name: AppRoute.Signup,
+        meta: {
+          guards: [authorizedGuard],
+        },
         component: () => import('src/pages/auth/Signup.vue'),
       },
     ],
   },
   {
     path: '',
+    redirect: {
+      name: AppRoute.Index,
+    },
     component: () => import('src/layouts/MainLayout.vue'),
+    meta: {
+      guards: [authGuard],
+    },
     children: [
       {
         path: '/index',

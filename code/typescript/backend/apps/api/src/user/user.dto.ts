@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { User } from '~libs/entities';
 
 export class RegisterUserDto {
   @IsEmail()
@@ -9,16 +10,19 @@ export class RegisterUserDto {
   password: string;
 }
 
-export class LoginUserDto {
-  @IsEmail()
+export class LoginUserDto implements Pick<User, 'email' | 'password'> {
+  // @IsEmail()
   @IsNotEmpty()
   email: string;
 
   @IsString()
   @IsNotEmpty()
   password: string;
-}
 
+  @IsString()
+  @IsOptional()
+  device_ip: string | null;
+}
 export class ChangePasswordDto {
   @IsString()
   @IsNotEmpty()

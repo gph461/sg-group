@@ -78,10 +78,10 @@ export class UserService implements OnEmitEvent<UserEvent> {
         id: true,
       },
     });
-    if (!resp) throw new UnauthorizedException();
+    if (!resp) throw new UnauthorizedException('No user found with this email');
 
     const isMatch = await comparePassword(password, resp.password);
-    if (!isMatch) throw new UnauthorizedException();
+    if (!isMatch) new BadRequestException('Wrong password');
 
     return await this.generateToken(resp.id);
   }
@@ -105,11 +105,9 @@ export class UserService implements OnEmitEvent<UserEvent> {
     const user = await db.user.create({
       data: {
         email: dto.email,
+        Role: 'Admin',
+        is_admin: true,
         password: await hashPassword(dto.password),
-      },
-      select: {
-        id: true,
-        email: true,
       },
     });
     this.emitEvent({

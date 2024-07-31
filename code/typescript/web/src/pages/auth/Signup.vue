@@ -8,10 +8,14 @@ import {
   TypographyParagraph,
   TypographyTitle,
 } from 'ant-design-vue';
+import { Api } from 'src/api';
 import { PasswordInput, PrimaryButton, TextInput } from 'src/components';
 import Card from 'src/components/Card.vue';
 import { useLoading } from 'src/composable';
+import { AppRoute } from 'src/router/routes';
 import { computed, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { RegisterUserDto } from '~backend/user/user.dto';
 
 interface Announcement {
   id: number;
@@ -20,6 +24,7 @@ interface Announcement {
   imageUrl: string | null;
 }
 
+const router = useRouter();
 const { loading, toast } = useLoading();
 const state = reactive<{
   email: string;
@@ -63,15 +68,27 @@ function passwordValidator(_rule, value: string) {
   }
   return Promise.reject('Passwords are not the same');
 }
+
 function handleSubmit() {
   toast(
     async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await Api.User.createUser({
+        email: state.email,
+        password: state.password,
+      } as RegisterUserDto);
+
+      router.push({ name: AppRoute.Dashboard });
     },
     {
       isLoading: loading,
     }
   );
+}
+
+function Login() {
+  router.push({
+    name: AppRoute.Login,
+  });
 }
 </script>
 <template>
@@ -131,14 +148,14 @@ function handleSubmit() {
                 :loading="loading"
                 :styles="{
                   marginTop: '30px',
-                  width: '350px',
+                  width: '60%',
                   backgroundColor: '#FF9D2D',
                 }"
               />
             </div>
             <Flex align="center" justify="center">
               Already has an account?
-              <PrimaryButton label="Login" style-type="link" />
+              <PrimaryButton label="Login" style-type="link" @click="Login" />
             </Flex>
           </Form>
         </Card>
@@ -202,13 +219,13 @@ function handleSubmit() {
       button {
         background: color-mix(
           in srgb,
-          var(--ant-primary-color),
+          var(#ff9d2d),
           transparent 30%
         ) !important;
       }
       &.slick-active {
         button {
-          background: var(--ant-primary-color) !important;
+          background: var(#ff9d2d) !important;
         }
       }
     }

@@ -1,18 +1,42 @@
 <script setup lang="ts">
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  Flex,
-  Form,
-  Table,
-  TableProps,
-} from 'ant-design-vue';
+import { Breadcrumb, BreadcrumbItem, Flex, Form, Table } from 'ant-design-vue';
 import { placementType } from 'ant-design-vue/es/drawer';
+import { editIcon } from 'src/assets/icons';
 import { PrimaryButton, SearchInput } from 'src/components';
 import { useSearch } from 'src/composable';
 import { Dialog } from 'src/plugins';
-import { computed, reactive, ref } from 'vue';
+import { reactive, ref } from 'vue';
 import CreateDialog from './CreateProjectDrawer.vue';
+
+interface filterType {
+  text: string;
+  value: string;
+}
+
+interface TableColumn {
+  title: string;
+  dataIndex: string;
+  width?: string;
+  sorter?: boolean;
+  filters?: filterType[];
+}
+
+interface roomtyps {
+  name: string;
+}
+
+interface Project {
+  action?: string;
+  developerName: string;
+  projectName: string;
+  type: roomtyps[];
+  totalComm: number;
+  pic: number;
+  subpic: number;
+  advertiser: number;
+  caller: number;
+  closer: number;
+}
 
 const loading = ref(false);
 const { searchKey } = useSearch();
@@ -24,7 +48,7 @@ const formValue = reactive<{
   },
 });
 
-const columns = [
+const columns: TableColumn[] = [
   {
     title: 'Action',
     dataIndex: 'action',
@@ -38,7 +62,7 @@ const columns = [
       { text: 'KSL', value: 'ksl' },
       { text: 'Setia', value: 'setia' },
     ],
-    width: '20%',
+    width: '15%',
   },
   {
     title: 'Project Name',
@@ -49,13 +73,6 @@ const columns = [
   {
     title: 'Type',
     dataIndex: 'type',
-    sorter: true,
-    filters: [
-      { text: '1 Room', value: '1r' },
-      { text: '2 Room', value: '2r' },
-      { text: '3 Room', value: '3r' },
-    ],
-    width: '20%',
   },
   {
     title: 'Total Comm',
@@ -64,83 +81,56 @@ const columns = [
   },
   {
     title: 'PIC',
-    dataIndex: 'PIC',
-    sorter: true,
+    dataIndex: 'pic',
   },
   {
     title: 'Sub-PIC',
-    dataIndex: 'SubPIC',
-    sorter: true,
+    dataIndex: 'subpic',
   },
   {
     title: 'Advertiser',
     dataIndex: 'advertiser',
-    sorter: true,
   },
   {
     title: 'Caller',
     dataIndex: 'caller',
-    sorter: true,
   },
   {
     title: 'Closer',
     dataIndex: 'closer',
-    sorter: true,
   },
 ];
 
-const datas = [
+const datas: Project[] = [
   {
-    key: '1',
     action: '',
     developerName: 'KSL',
     projectName: 'KSL Residence 1',
-    type: '1 Room',
-    totalComm: 'RM 10,000',
-    PIC: '1%',
-    SubPIC: '1%',
-    advertiser: '1%',
-    caller: '1%',
-    closer: '1%',
+    type: [{ name: '3R1B' }, { name: '2R1B' }],
+    totalComm: 2025000,
+    pic: 1,
+    subpic: 1,
+    advertiser: 1,
+    caller: 1,
+    closer: 1,
+  },
+  {
+    action: '',
+    developerName: 'Setia',
+    projectName: 'Setia Residence 1',
+    type: [{ name: '3R2B' }, { name: '2R1B' }, { name: '1R1B' }],
+    totalComm: 8888888,
+    pic: 1,
+    subpic: 1,
+    advertiser: 1,
+    caller: 1,
+    closer: 1,
   },
 ];
 
-const {
-  data: data = datas,
-  run,
-  current,
-  pageSize,
-} = usePagination(queryData, {
-  formatResult: (res) => res.data.results,
-  pagination: {
-    currentKey: 'page',
-    pageSizeKey: 'results',
-  },
-});
-
-const pagination = computed(() => ({
-  total: 200,
-  current: current.value,
-  pageSize: pageSize.value,
-}));
-
-const handleTableChange: TableProps['onChange'] = (
-  pag: { pageSize: number; current: number },
-  filters: any,
-  sorter: any
-) => {
-  run({
-    results: pag.pageSize,
-    page: pag?.current,
-    sortField: sorter.field,
-    sortOrder: sorter.order,
-    ...filters,
-  });
-};
-
 async function showDrawer(position: placementType) {
   Dialog.create({
-    title: 'Create Developer',
+    title: 'Create Project',
     component: CreateDialog,
     width: 800,
     bodyStyle: {},
@@ -165,12 +155,16 @@ async function showDrawer(position: placementType) {
 function handleFinish() {
   console.log('state ', formValue);
 }
+
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
 </script>
 
 <template>
   <Breadcrumb style="margin: 16px 0">
     <BreadcrumbItem>Home</BreadcrumbItem>
-    <BreadcrumbItem>Project</BreadcrumbItem>
+    <BreadcrumbItem>Developer</BreadcrumbItem>
   </Breadcrumb>
 
   <div style="text-align: left">
@@ -188,23 +182,34 @@ function handleFinish() {
         style="line-height: normal"
         @click="showDrawer('right')"
       >
-        Create Developer
+        Create Project
       </PrimaryButton>
     </Flex>
   </div>
 
   <div>
-    <Table
-      :columns="columns"
-      :row-key="(record) => record.login.uuid"
-      :data-source="data"
-      :pagination="pagination"
-      :loading="loading"
-      @change="handleTableChange"
-    >
+    <Table :columns="columns" :data-source="datas" :loading="loading">
       <template #bodyCell="{ column, text }">
-        <template v-if="column.dataIndex === 'name'">
-          {{ text.first }} {{ text.last }}
+        <template v-if="column.dataIndex === 'action'">
+          <PrimaryButton
+            :icon="editIcon"
+            size="small"
+            style-type="text"
+            placement="bottomRight"
+            @click="showDrawer('right')"
+          />
+        </template>
+        <template v-if="column.dataIndex === 'totalComm'">
+          {{ 'RM ' + numberWithCommas(text) }}
+        </template>
+        <template v-if="column.dataIndex === 'type'">
+          <div id="app">
+            <ul>
+              <li v-for="type in text" :key="type.name">
+                {{ type.name }}
+              </li>
+            </ul>
+          </div>
         </template>
       </template>
     </Table>

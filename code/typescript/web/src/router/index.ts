@@ -20,7 +20,7 @@ async function validateRoute(
     const guards = matched.meta.guards || [];
     for (const guard of guards) {
       const res = guard(to);
-      if (res !== true) return res;
+      if (res.route !== true) return res.route;
     }
   }
   return true;

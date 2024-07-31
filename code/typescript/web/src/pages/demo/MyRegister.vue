@@ -33,7 +33,6 @@ const state = reactive<{
 const announcements = ref<Announcement[]>([]);
 const carouselContent = computed<Announcement[]>(() => buildCarouselContent());
 const currentSlide = ref(carouselContent.value[0].id);
-const checked = ref(false);
 function buildCarouselContent(): Announcement[] {
   if (announcements.value.length > 0) {
     currentSlide.value = announcements.value[0].id;
@@ -62,6 +61,7 @@ function passwordValidator(_rule, value: string) {
   }
   return Promise.reject('Passwords are not the same');
 }
+
 function handleSubmit() {
   toast(
     async () => {
@@ -142,8 +142,8 @@ function handleSubmit() {
               <div class="absolute-center">
                 <Typography>
                   <TypographyTitle :level="4">
-                    {{ item.title }}</TypographyTitle
-                  >
+                    {{ item.title }}
+                  </TypographyTitle>
                   <TypographyParagraph>
                     {{ item.description }}
                   </TypographyParagraph>

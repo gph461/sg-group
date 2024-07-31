@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req } from '@nestjs/common';
 import { Request } from 'express';
 import { GetUser } from '~backend/decorators';
 import { UsePublic } from '~backend/guards/jwt-auth.guard';
@@ -39,5 +39,10 @@ export class AuthController {
   @Post('logout')
   async logout(@Req() req: Request) {
     await this.userService.logout(req.token);
+  }
+
+  @Get('profile')
+  async getProfile(@Req() req: Request) {
+    return req.User;
   }
 }

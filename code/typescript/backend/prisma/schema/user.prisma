@@ -1,12 +1,20 @@
+enum Role {
+  Admin
+  Agent
+  Banker
+  Lowyer
+}
+
 model User {
   id         Int           @id @default(autoincrement())
   email      String        @db.VarChar(255)
-  password   String        @db.VarChar(50)
+  password   String        
   is_admin   Boolean       @default(false)
+  Role       Role
   created_at DateTime      @default(now())
   updated_at DateTime?     @updatedAt
   Sessions   UserSession[]
 
-  @@index([email])
+  @@index([email, Role])
   @@map("users")
 }

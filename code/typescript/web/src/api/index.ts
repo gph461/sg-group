@@ -1,4 +1,7 @@
 import axios, { AxiosError, AxiosInstance, AxiosResponse } from 'axios';
+import { useUserStore } from 'src/stores/user';
+import Developer from './developer';
+import User from './user';
 
 export class ApiError extends Error {
   constructor(public readonly statusCode: number, message?: string) {
@@ -14,7 +17,8 @@ export function getData<T>(response: AxiosResponse<T>): T {
 
 export const Api = {
   client(path = '', requireToken = true): AxiosInstance {
-    const token = 'token here';
+    const user = useUserStore();
+    const token = user.token;
     if (requireToken && token === null) {
       throw new Error('Unauthorized request');
     }
@@ -48,4 +52,6 @@ export const Api = {
     );
     return client;
   },
+  Developer,
+  User,
 };

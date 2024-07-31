@@ -42,18 +42,15 @@ function handleEmit() {
           required
           :name="['developer', 'name']"
         />
+        <div style="text-align: right; align-content: end">
+          <PrimaryButton
+            class="text-fprimary-1"
+            style="text-align: right"
+            type="submit"
+            label="Submit"
+          />
+        </div>
       </Form>
-    </div>
-
-    <div style="text-align: right; align-content: end">
-      <PrimaryButton
-        btn-class="abc bg-fprimary-1"
-        style="align-self: flex-end"
-        :loading="loading"
-        @click="handleEmit"
-      >
-        Submit
-      </PrimaryButton>
     </div>
   </div>
 </template>

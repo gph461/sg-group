@@ -1,9 +1,9 @@
-import { BootstrapConsole } from 'nestjs-console';
-import { CliModule } from './cli.module';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { BootstrapConsole } from 'nestjs-console';
+import { CliModule } from './cli.module';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

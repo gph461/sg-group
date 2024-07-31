@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { Breadcrumb, BreadcrumbItem, Flex, Form, Table } from 'ant-design-vue';
+import { Breadcrumb, BreadcrumbItem, Flex, Form } from 'ant-design-vue';
 import { placementType } from 'ant-design-vue/es/drawer';
-import { editIcon } from 'src/assets/icons';
+import { Api } from 'src/api';
 import { PrimaryButton, SearchInput } from 'src/components';
 import { useSearch } from 'src/composable';
 import { Dialog } from 'src/plugins';
-import { reactive, ref } from 'vue';
+import { onMounted, reactive, ref } from 'vue';
+import { DeveloperDto } from '~backend/developer/developer.dto';
 import CreateDialog from './CreateDeveloperDrawer.vue';
 
 interface filterType {
@@ -18,15 +19,7 @@ interface TableColumn {
   dataIndex: string;
   width?: string;
   sorter?: boolean;
-  filters?: filterType;
-}
-
-interface Developer {
-  action?: string;
-  developerName: string;
-  projectAmount: number;
-  totalCommDistribursed: number;
-  totalCommToBeDistribursed: number;
+  filters?: filterType[];
 }
 
 const loading = ref(false);
@@ -38,6 +31,13 @@ const formValue = reactive<{
     name: 'abc',
   },
 });
+const developers = ref<DeveloperDto[]>([
+  {
+    id: 4,
+    name: 'name',
+  },
+]);
+const developer = ref<DeveloperDto>();
 
 const columns: TableColumn[] = [
   {
@@ -75,23 +75,6 @@ const columns: TableColumn[] = [
   },
 ];
 
-const datas: Developer[] = [
-  {
-    action: '',
-    developerName: 'KSL',
-    projectAmount: 10,
-    totalCommDistribursed: 50000,
-    totalCommToBeDistribursed: 1000,
-  },
-  {
-    action: '',
-    developerName: 'Eco World',
-    projectAmount: 8,
-    totalCommDistribursed: 60000,
-    totalCommToBeDistribursed: 500,
-  },
-];
-
 async function showDrawer(position: placementType) {
   Dialog.create({
     title: 'Create Developer',
@@ -109,8 +92,6 @@ async function showDrawer(position: placementType) {
     placement: position,
     async onOK(v) {
       await new Promise((resolve) => setTimeout(resolve, 3000));
-      // console.log('abc');
-      // console.log(v);
     },
   });
   // await new Promise((resolve) => setTimeout(resolve, 500));
@@ -147,14 +128,35 @@ function handleFinish() {
 function numberWithCommas(x) {
   return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
+
+async function fetchDeveloper() {
+  //developer.value = await Api.Developer.getDeveloper(1);
+  developers.value = await Api.Developer.getAllDeveloper();
+}
+
+// watch(
+//   () => developer.value,
+//   () => {
+//     developers.value = [
+//       {
+//         id: 1,
+//         name: '123',
+//       },
+//     ];
+//   }
+// );
+
+onMounted(async () => {
+  await fetchDeveloper();
+});
 </script>
 
 <template>
   <Breadcrumb style="margin: 16px 0">
     <BreadcrumbItem>Home</BreadcrumbItem>
-    <BreadcrumbItem>Developer</BreadcrumbItem>
+    <BreadcrumbItem>Developer {{ developer }}</BreadcrumbItem>
+    <BreadcrumbItem>Developers {{ developers }}</BreadcrumbItem>
   </Breadcrumb>
-
   <div style="text-align: left">
     <p style="color: black; line-height: normal; margin: 5px">Search</p>
     <Flex justify="space-between">
@@ -174,9 +176,8 @@ function numberWithCommas(x) {
       </PrimaryButton>
     </Flex>
   </div>
-
   <div>
-    <Table :columns="columns" :data-source="datas" :loading="loading">
+    <!-- <Table :columns="columns" :data-source="developers" :loading="loading">
       <template #bodyCell="{ column, text }">
         <template v-if="column.dataIndex === 'action'">
           <PrimaryButton
@@ -196,8 +197,9 @@ function numberWithCommas(x) {
           {{ 'RM ' + numberWithCommas(text) }}
         </template>
       </template>
-    </Table>
+    </Table> -->
   </div>
+  <div style="color: black"></div>
 </template>
 <style lang="sass">
 .ant-drawer-title

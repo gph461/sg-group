@@ -12,8 +12,10 @@ import {
 import { PasswordInput, PrimaryButton, TextInput } from 'src/components';
 import Card from 'src/components/Card.vue';
 import { useLoading } from 'src/composable';
+import { AppRoute } from 'src/router/routes';
+import { useUserStore } from 'src/stores/user';
 import { computed, reactive, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 
 interface Announcement {
   id: number;
@@ -23,7 +25,7 @@ interface Announcement {
 }
 
 const router = useRouter();
-const route = useRoute();
+const user = useUserStore();
 const { loading, toast } = useLoading();
 const state = reactive<{ email: string; password: string }>({
   email: '',
@@ -59,12 +61,21 @@ function buildCarouselContent(): Announcement[] {
 function handleSubmit() {
   toast(
     async () => {
-      await new Promise((resolve) => setTimeout(resolve, 3000));
+      await user.login(state.email, state.password);
+      if (user.currentUser) {
+        router.push({ name: AppRoute.Dashboard });
+      }
     },
     {
       isLoading: loading,
     }
   );
+}
+
+function signUp() {
+  router.push({
+    name: AppRoute.Signup,
+  });
 }
 </script>
 <template>
@@ -123,11 +134,15 @@ function handleSubmit() {
 
             <Flex align="center" justify="center">
               Don't Have An Account?
-              <PrimaryButton label="Sign Up" style-type="link" />
+              <PrimaryButton
+                label="Sign Up"
+                style-type="link"
+                @click="signUp"
+              />
             </Flex>
           </Form>
         </Card>
-        <Carousel style="width: 50%" autoplay dots>
+        <Carousel style="width: 50%; color: white" autoplay dots>
           <div v-for="item in carouselContent" :key="item.id">
             <div
               style="height: 100vh; position: relative"
@@ -158,7 +173,7 @@ function handleSubmit() {
   </div>
 </template>
 
-<style lang="scss" scoped>
+<style scoped lang="scss">
 .login {
   position: relative;
   // background-color: rgba( var(--ant-primary-color)/0.43)
@@ -187,13 +202,13 @@ function handleSubmit() {
       button {
         background: color-mix(
           in srgb,
-          var(--ant-primary-color),
+          var(#ff9d2d) !important,
           transparent 30%
         ) !important;
       }
       &.slick-active {
         button {
-          background: var(--ant-primary-color) !important;
+          background: var(#ff9d2d) !important;
         }
       }
     }

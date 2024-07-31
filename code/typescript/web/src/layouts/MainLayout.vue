@@ -15,8 +15,10 @@ import {
 } from 'ant-design-vue';
 import { AppSpinner, DropdownButton } from 'src/components';
 import { AppRoute } from 'src/router/routes';
+import { useUserStore } from 'src/stores/user';
 import { computed, h, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+
 interface sideNavItem {
   key: string;
   icon?: () => ReturnType<typeof h>;
@@ -24,6 +26,7 @@ interface sideNavItem {
   children?: sideNavItem[];
 }
 
+const user = useUserStore();
 const router = useRouter();
 const route = useRoute();
 const selectedKeys = computed(() => [route.name as string]);
@@ -97,7 +100,7 @@ const loading = ref(false);
 
 <template>
   <Layout style="min-height: 100vh">
-    <LayoutSider class="siderStyle" :width="250" height="100%" theme="light">
+    <LayoutSider class="siderStyle" :width="250" theme="light">
       <div style="color: black; background-color: #ffefdd; height: 200px">
         Logo
       </div>
@@ -124,7 +127,7 @@ const loading = ref(false);
               {
                 icon: () => h(LogoutOutlined),
                 label: 'Logout',
-                callback: () => {},
+                callback: async () => await user.logout(),
               },
             ]"
           >
@@ -141,10 +144,6 @@ const loading = ref(false);
         class="contentStyle"
         style="background-color: #f5f5f5; padding: 0 16px"
       >
-        <!-- <Breadcrumb style="margin: 16px 0">
-          <BreadcrumbItem>Home</BreadcrumbItem>
-          <BreadcrumbItem>xxx</BreadcrumbItem>
-        </Breadcrumb> -->
         <AppSpinner :loading="loading" :glass-effect="true">
           <router-view />
         </AppSpinner>
@@ -155,9 +154,6 @@ const loading = ref(false);
 
 <style lang="scss">
 .siderStyle {
-  text-align: center;
-  height: 100h-max;
-  color: #ffffff;
   box-shadow: 1px 64px 4px grey;
 }
 
@@ -170,10 +166,7 @@ const loading = ref(false);
 }
 
 .contentStyle {
-  min-height: 100vh;
   text-align: center;
-  min-height: 120;
-  line-height: 120px;
   color: #fff;
   margin-top: 2px;
 }

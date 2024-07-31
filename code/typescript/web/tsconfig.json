@@ -46,6 +46,9 @@
       "public/*": [
         "public/*"
       ],
+      "~api/*": [
+        "../backend/apps/api/src/*"
+      ],
     },
   },
   "include": [

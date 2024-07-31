@@ -1,59 +1,16 @@
 <script setup lang="ts">
-import { Form } from 'ant-design-vue';
-import { PrimaryButton, TextInput } from 'src/components';
-import { useLoading } from 'src/composable';
-import { Dialog } from 'src/plugins';
-import { reactive } from 'vue';
-
-const { loading, toast } = useLoading();
-
-const formValue = reactive<{
-  user: { name: string };
-}>({
-  user: {
-    name: 'abc',
-  },
-});
-
-function handleFinish() {
-  console.log('state ', formValue);
-}
-
-function handleEmit() {
-  toast(
-    async () => {
-      console.log(loading.value);
-      await Dialog.emit('submit');
-      console.log('hi');
-      console.log(loading.value);
-    },
-    { isLoading: loading }
-  );
-}
+import { Flex, Step, Steps } from 'ant-design-vue';
 </script>
 
 <template>
-  <div style="min-height: 100%; display: grid">
+  <Flex style="height: 100%">
     <div>
-      <Form :model="formValue" @finish="handleFinish">
-        <TextInput
-          v-model="formValue.user.name"
-          label="Developer Name"
-          required
-          :name="['developer', 'name']"
-        />
-      </Form>
+      <Steps direction="vertical" :current="1" size="default">
+        <Step title="Finished" description="Project Details" />
+        <Step title="In Progress" description="Property Type" />
+        <Step title="Waiting" description="Commission Details" />
+      </Steps>
     </div>
-
-    <div style="text-align: right; align-content: end">
-      <PrimaryButton
-        btn-class="abc bg-fprimary-1"
-        style="align-self: flex-end"
-        :loading="loading"
-        @click="handleEmit"
-      >
-        Submit
-      </PrimaryButton>
-    </div>
-  </div>
+    <div></div>
+  </Flex>
 </template>

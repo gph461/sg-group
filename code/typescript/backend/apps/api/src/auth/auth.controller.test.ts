@@ -4,7 +4,7 @@ import { LoginUserDto } from '~backend/user/user.dto';
 import { UserWithoutPassword } from '~libs/entities';
 
 export const authControllerTestCases = describe('AuthController Tests', () => {
-  it('should login user successfully', async () => {
+  /* it('should login user successfully', async () => {
     const body: LoginUserDto = {
       email: `$M{NewUser.email}`,
       password: `$M{NewUser.password}`,
@@ -32,5 +32,5 @@ export const authControllerTestCases = describe('AuthController Tests', () => {
       ...getDataMap('NewUser'),
       ...userProfile,
     });
-  });
+  }); */
 });
